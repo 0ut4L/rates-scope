@@ -17,7 +17,7 @@ object VolatilityCube:
   ): VolatilityCube[T] =
     val tenors = surfaces.map(_(0))
     require(
-      tenors.map(_.toYearFraction.toDouble).isStrictlyIncreasing,
+      tenors.map(_.toYearFraction.value).isStrictlyIncreasing,
       s"surfaces must be order by tenor, got ${tenors.mkString(",")}"
     )
 

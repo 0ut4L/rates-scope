@@ -3,6 +3,7 @@ package lib.dtos
 import cats.Show
 import io.circe.*
 import io.circe.syntax.*
+import cats.syntax.all.*
 
 import scala.util.Try
 
@@ -34,11 +35,8 @@ object Tenor:
 
   def parse(s: String): Option[Tenor] =
     s match
-      case regex(len, unit) =>
-        Unit.parse(unit).flatMap: u =>
-          len.toIntOption.map: l =>
-            Tenor(l, u)
-      case _ => None
+      case regex(len, unit) => (len.toIntOption, Unit.parse(unit)).mapN(Tenor.apply)
+      case _                => None
 
   def parseUnsafe(s: String): Tenor = parse(s).get
 

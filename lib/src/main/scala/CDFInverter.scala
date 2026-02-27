@@ -26,7 +26,7 @@ object CDFInverter:
       params: Params = Params()
   ): Either[Arbitrage, Double => Double] =
 
-    val dt = t.yearFractionTo(expiry)(using DateLike[T], DayCounter.Act365).toDouble
+    val dt = t.yearFractionTo(expiry)(using DateLike[T], DayCounter.Act365).value
 
     val fwd = forward(expiry)
 

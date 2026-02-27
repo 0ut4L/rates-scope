@@ -15,12 +15,14 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
 
     val t = d"2025-10-12"
 
+    val calendarId = dtos.CalendarId("NO_HOLIDAYS")
+
     val rate: dtos.Underlying = dtos.Underlying.Libor(
       dtos.Currency.USD,
       dtos.Tenor.`3M`,
       2,
       dtos.DayCounter.Act360,
-      "NO_HOLIDAYS",
+      calendarId,
       dtos.Curve(dtos.Currency.USD, "SINGLE_CURVE"),
       dtos.BusinessDayConvention.ModifiedFollowing
     )
@@ -31,7 +33,7 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
         dtos.Currency.USD,
         2,
         dtos.DayCounter.Act360,
-        "NO_HOLIDAYS",
+        calendarId,
         dtos.Curve(dtos.Currency.USD, "SINGLE_CURVE"),
         dtos.BusinessDayConvention.ModifiedFollowing
       ),
@@ -39,9 +41,9 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
         2,
         0,
         dtos.Tenor.`3M`,
-        "LIBOR_RATE",
+        dtos.RateId("LIBOR_RATE"),
         dtos.DayCounter.Act360,
-        "NO_HOLIDAYS",
+        calendarId,
         dtos.BusinessDayConvention.ModifiedFollowing,
         dtos.StubConvention.Short,
         dtos.Direction.Backward,
@@ -51,7 +53,7 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
 
     val market = Market(
       tRef = t,
-      rates = Map("LIBOR_RATE" -> rate),
+      rates = Map(dtos.RateId("LIBOR_RATE") -> rate),
       curves =
         Map(
           dtos.Curve(dtos.Currency.USD, "SINGLE_CURVE") ->
@@ -83,7 +85,7 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
           VolUnit.BpPerYear
         )
       ),
-      calendars = Map("NO_HOLIDAYS" -> dtos.Calendar[LocalDate](Nil))
+      calendars = Map(calendarId -> dtos.Calendar[LocalDate](Nil))
     )
 
     val fixingAt = d"2026-10-12"
@@ -91,7 +93,7 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
     val endAt = d"2027-01-14"
 
     val caplet = dtos.Payoff.Caplet(
-      "LIBOR_RATE",
+      dtos.RateId("LIBOR_RATE"),
       fixingAt,
       startAt,
       endAt,

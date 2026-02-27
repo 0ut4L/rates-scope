@@ -53,7 +53,7 @@ class CompoundedRate[T: DateLike](
         compoundingFactor(schedule(obsIdx).fixingAt, fixings) /
           rate.resetCurve.discount(schedule(futIdx).startAt, to)
     .map: f =>
-      (f - 1.0) / dcf.toDouble
+      (f - 1.0) / dcf.value
 
 object CompoundedRate:
 

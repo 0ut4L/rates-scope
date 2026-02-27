@@ -26,4 +26,4 @@ class Libor[T: DateLike](
     t =>
       val (startAt, endAt) = interestPeriod(t)
       val dcf = startAt.yearFractionTo(endAt)
-      (1.0 / resetCurve.discount(startAt, endAt) - 1.0) / dcf.toDouble
+      (1.0 / resetCurve.discount(startAt, endAt) - 1.0) / dcf.value

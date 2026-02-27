@@ -18,7 +18,7 @@ class Lib[T: lib.DateLike](market: Market[T]):
     Either.catchNonFatal(lib.Calendar.fromHolidays(calendar.holidays.toIndexedSeq)).leftMap: th =>
       lib.Error.Generic(s"unable to build calendar: ${th.getMessage}")
 
-  def buildFixings(rate: String): Either[lib.Error, Map[T, Double]] =
+  def buildFixings(rate: dtos.RateId): Either[lib.Error, Map[T, Double]] =
     market.fixings(rate).orElse(Seq.empty.asRight).flatMap: fixings =>
       fixings.groupBy(_.t).toSeq.traverse: (fixingAt, all) =>
         all.headOption.toRight(MarketError.MissingFixingAt(
@@ -56,7 +56,7 @@ class Lib[T: lib.DateLike](market: Market[T]):
         buildVolConventions(currency, tenor).map(_.forward).tupleLeft(tenor)
       .map(_.toMap)
       (surfaces, forwards).tupled.map: (surfaces, forwards) =>
-        val sortedSurfaces = surfaces.sortBy((t, _) => t.toYearFraction.toDouble)
+        val sortedSurfaces = surfaces.sortBy((t, _) => t.toYearFraction.value)
           .map((t, e) => (t: Tenor) -> e)
         lib.VolatilityCube[T](sortedSurfaces, forwards)
 
@@ -154,18 +154,18 @@ class Lib[T: lib.DateLike](market: Market[T]):
               discountCurve
             )
 
-  def buildLibor(rate: String): Either[lib.Error, lib.Libor[T]] =
+  def buildLibor(rate: dtos.RateId): Either[lib.Error, lib.Libor[T]] =
     market.rate(rate).flatMap:
       case libor: dtos.Underlying.Libor => toLibor(libor)
       case _                            => lib.Error.Generic(s"$rate is not a libor").asLeft
 
-  def buildSwapRate(rate: String): Either[lib.Error, lib.SwapRate[T]] =
+  def buildSwapRate(rate: dtos.RateId): Either[lib.Error, lib.SwapRate[T]] =
     market.rate(rate).flatMap:
       case swapRate: dtos.Underlying.SwapRate =>
         toSwapRate(swapRate)
       case _ => lib.Error.Generic(s"$rate is not a swap rate").asLeft
 
-  def buildCompoundedSwapRate(rate: String): Either[lib.Error, lib.CompoundedSwapRate[T]] =
+  def buildCompoundedSwapRate(rate: dtos.RateId): Either[lib.Error, lib.CompoundedSwapRate[T]] =
     market.rate(rate).flatMap:
       case swapRate: dtos.Underlying.CompoundedSwapRate =>
         toCompoundedSwapRate(swapRate)

@@ -73,13 +73,13 @@ class Api[T: lib.DateLike](val market: Market[T]):
           val vsQuoted = ksQuoted.map(volSkew andThen volInUnit)
           val impliedPdf = bachelier.impliedDensity(
             fwd,
-            dt.toDouble,
+            dt.value,
             volSkew,
             volSkew.fstDerivative,
             volSkew.sndDerivative
           )
           val pdfQuoted = ksQuoted.map(impliedPdf)
-          val atmStdv = volSkew(fwd) * math.sqrt(dt.toDouble)
+          val atmStdv = volSkew(fwd) * math.sqrt(dt.value)
           val cdfInvN = NormalDistribution(fwd, atmStdv).inverseCumulativeProbability
           val ksMiddle = (1 to nSamplesMiddle).map(i => cdfInvN(i / (nSamplesMiddle + 1.0)))
           val ksRight = ksMiddle.lastOption.flatMap: kmMax =>
