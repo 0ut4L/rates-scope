@@ -13,7 +13,7 @@ object VolUnit:
 enum VolUnit derives ConfiguredEnumCodec:
   case BpPerYear
 
-case class VolatiltySkew(skew: Seq[(Double, Double)]) derives Codec
+case class VolatiltySkew(skew: Seq[(Moneyness, Double)]) derives Codec
 
 case class VolatilitySurface(surface: Map[Tenor, VolatiltySkew]) derives Codec
 
@@ -31,7 +31,7 @@ object VolatilityMarketConventions:
       currency: Currency,
       spotLag: Int,
       dayCounter: DayCounter,
-      calendar: String,
+      calendar: CalendarId,
       resetCurve: Curve,
       bdConvention: BusinessDayConvention
   ) derives Codec
@@ -40,9 +40,9 @@ object VolatilityMarketConventions:
       spotLag: Int,
       paymentDelay: Int,
       fixedPeriod: Tenor,
-      floatingRate: String,
+      floatingRate: RateId,
       fixedDayCounter: DayCounter,
-      calendar: String,
+      calendar: CalendarId,
       bdConvention: BusinessDayConvention,
       stub: StubConvention,
       direction: Direction,

@@ -47,8 +47,8 @@ class BackwardLookingCaplet[T: DateLike](
         val dt = t.yearFractionTo(futRate.firstFixingAt) +
           schedule.indices.init.foldMap(i =>
             schedule(i).fixingAt.yearFractionTo(schedule(i + 1).fixingAt) *
-              pow(schedule(i + 1).startAt.yearFractionTo(futRate.to).toDouble, 2)
-          ) / pow(futRate.from.yearFractionTo(futRate.to).toDouble, 2)
+              pow(schedule(i + 1).startAt.yearFractionTo(futRate.to).value, 2)
+          ) / pow(futRate.from.yearFractionTo(futRate.to).value, 2)
         bachelier.price(optionType, forward, futStrike, vol, dt, discount)
 
     Either
@@ -67,7 +67,7 @@ class BackwardLookingCaplet[T: DateLike](
               if t < fullRate.firstFixingAt then
                 futPrice(fullRate, strike).map(fullDcf * _)
               else if t >= fullRate.lastFixingAt then
-                val fullRateValue = (fullRate.fullCompoundingFactor(fixings) - 1) / fullDcf.toDouble
+                val fullRateValue = (fullRate.fullCompoundingFactor(fixings) - 1) / fullDcf.value
                 Right:
                   fullDcf * discount * max(optionType.sign * (fullRateValue - strike), 0.0)
               else
@@ -76,6 +76,6 @@ class BackwardLookingCaplet[T: DateLike](
                 val schedule = fullRate.schedule
                 val cf = fullRate.compoundingFactor(schedule(obsIdx).fixingAt, fixings)
                 val futRate = new CompoundedRate[T](rate, schedule.slice(futIdx, schedule.length))
-                val futDcf = futRate.dcf.toDouble
+                val futDcf = futRate.dcf.value
                 val futStrike = ((fullDcf * strike + 1) / cf - 1) / futDcf
                 futPrice(futRate, futStrike).map(futDcf * cf * _)

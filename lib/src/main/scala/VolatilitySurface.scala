@@ -37,9 +37,9 @@ object VolatilitySurface:
           val (tL, fL) = left
           val (tR, fR) = right
           val w = tL.yearFractionTo(t) / tL.yearFractionTo(tR)
-          val dt = tRef.yearFractionTo(t).toDouble
-          val dtL = tRef.yearFractionTo(tL).toDouble
-          val dtR = tRef.yearFractionTo(tR).toDouble
+          val dt = tRef.yearFractionTo(t).value
+          val dtL = tRef.yearFractionTo(tL).value
+          val dtR = tRef.yearFractionTo(tR).value
           1.0 / dt * ((1.0 - w) * dtL * fL(forward(tL) - m) + w * dtR * fR(forward(tR) - m))
 
         def apply(k: Double): Double =

@@ -4,51 +4,50 @@ import java.time.Period
 
 object quantities:
 
-  /** Year fraction */
+  // Year fraction
   opaque type YearFraction = Double
 
   object YearFraction:
-    def apply(yf: Double): YearFraction = yf
+    inline def apply(yf: Double): YearFraction = yf
 
     val zero: YearFraction = 0.0
     val oneDay: YearFraction = 1.0 / 365.0
     val oneYear: YearFraction = 1.0
 
     extension (yf: YearFraction)
-      def toDouble: Double = yf
-      def +(other: YearFraction) = yf + other
-      def -(other: YearFraction) = yf - other
-      def *(other: Double) = yf * other
-      def /(other: YearFraction) = yf / other
+      inline def value: Double = yf
+      inline def +(other: YearFraction) = yf + other
+      inline def -(other: YearFraction) = yf - other
+      inline def *(other: Double) = yf * other
+      inline def /(other: YearFraction) = yf / other
 
     given Conversion[Double, YearFraction] = YearFraction.apply
 
-  /** Annualized interest rate */
+  // Annualized interest rate
   opaque type Rate = Double
 
   object Rate:
-    def apply(r: Double): Rate = r
+    inline def apply(r: Double): Rate = r
 
     extension (r: Rate)
-      def toDouble: Double = r
-      def *(yf: YearFraction): Double = r * yf
-      def unary_- : Rate = -r
+      inline def value: Double = r
+      inline def *(yf: YearFraction): Double = r * yf
+      inline def unary_- : Rate = -r
 
     given Conversion[Double, Rate] = Rate.apply
 
-  /** Strike */
+  // Strike
   opaque type Strike = Double
 
   object Strike:
-    def apply(r: Double): Rate = r
+    inline def apply(r: Double): Rate = r
 
-    extension (r: Strike)
-      def toDouble: Double = r
+    extension (r: Strike) inline def value: Double = r
 
     given Conversion[Double, Strike] = Strike.apply
 
-  /** Tenor */
 
+  // Tenor
   case class Tenor(length: Int, unit: Tenor.Unit):
 
     def days: Int = unit match

@@ -30,7 +30,7 @@ object YieldCurve:
     require(dfs.forall((t, _) => t > ref), s"pillars must be strictly after ref $ref")
     require(dfs.forall((_, df) => df > 0.0), s"discount factors must be positive")
 
-    val yfs = 0.0 +: ts.map(ref.yearFractionTo(_).toDouble)
+    val yfs = 0.0 +: ts.map(ref.yearFractionTo(_).value)
     val rts = 0.0 +: dfs.map((_, df) => -log(df))
 
     val interp = LinearInterpolation.withLinearExtrapolation(yfs, rts)
@@ -38,10 +38,10 @@ object YieldCurve:
     new YieldCurve[T]:
       def spotRate(t: T): Rate =
         val yf = ref.yearFractionTo(t)
-        interp(yf.toDouble) / yf.toDouble
+        interp(yf.value) / yf.value
       def discount(from: T): Double =
         val yf = ref.yearFractionTo(from)
-        val rt = interp(yf.toDouble)
+        val rt = interp(yf.value)
         exp(-rt)
 
   def continuousCompounding[T: DateLike](

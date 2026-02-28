@@ -37,9 +37,9 @@ class Caplet[T: DateLike](
           val dcf = startAt.yearFractionTo(endAt)(using DateLike[T], rate.dayCounter)
           if t >= fixingAt then
             val rate = fixings(fixingAt)
-            d * dcf.toDouble * max(optionType.sign * (rate - strike), 0.0)
+            d * dcf.value * max(optionType.sign * (rate - strike), 0.0)
           else
             val f = rate.forward(fixingAt)
             val dt = t.yearFractionTo(fixingAt)(using DateLike[T], DayCounter.Act365)
             val vol = volSurface(fixingAt)(strike)
-            dcf * bachelier.price(optionType, f, strike, dt.toDouble, vol, d)
+            dcf * bachelier.price(optionType, f, strike, dt.value, vol, d)

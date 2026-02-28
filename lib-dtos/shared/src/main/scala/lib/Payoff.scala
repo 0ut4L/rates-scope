@@ -11,7 +11,7 @@ object Payoff:
 enum Payoff[T]:
 
   case Caplet[T](
-      rate: String,
+      rate: RateId,
       fixingAt: T,
       startAt: T,
       endAt: T,
@@ -23,7 +23,7 @@ enum Payoff[T]:
   ) extends Payoff[T]
 
   case Swaption[T](
-      rate: String,
+      rate: RateId,
       fixingAt: T,
       strike: Double,
       optionType: OptionType,
@@ -34,7 +34,7 @@ enum Payoff[T]:
   case BackwardLookingCaplet[T](
       startAt: T,
       endAt: T,
-      rate: String,
+      rate: RateId,
       paymentCurrency: Currency,
       paymentAt: T,
       strike: Double,
