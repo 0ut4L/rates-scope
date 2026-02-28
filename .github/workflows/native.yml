@@ -1,0 +1,60 @@
+name: Native Image
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+  release:
+    types: [published]
+jobs:
+  native-image:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-13, ubuntu-latest]
+        include:
+          # Replace "example" with the name your binary
+          - os: macos-13
+            uploaded_filename: rates-lib-x86_64-apple-darwin
+            local_path: json-rpc/target/native-image/rates-lib
+          - os: ubuntu-latest
+            uploaded_filename: rates-lib-x86_64-pc-linux
+            local_path: json-rpc/target/native-image/rates-lib
+    env:
+      # define Java options for both official sbt and sbt-extras
+      JAVA_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
+      JVM_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 8
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - run: git fetch --tags || true
+      - name: Setup Windows C++ toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.os == 'windows-latest' }}
+      - name: Build
+        shell: bash
+        run: |
+          echo $(pwd)
+          sbt clean json-rpc/nativeImage
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ${{ matrix.local_path }}
+          name: ${{ matrix.uploaded_filename }}
+      - name: Upload release
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ matrix.local_path }}
+          asset_name: ${{ matrix.uploaded_filename }}
+          asset_content_type: application/zip
