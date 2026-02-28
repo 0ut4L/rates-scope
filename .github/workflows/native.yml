@@ -10,6 +10,8 @@ on:
 jobs:
   native-image:
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -53,6 +55,7 @@ jobs:
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
             "${{ matrix.local_path }}" \
-            --clobber
+            --clobber \
+            --name "${{ matrix.uploaded_filename }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
