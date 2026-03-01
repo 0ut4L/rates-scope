@@ -53,7 +53,7 @@ jobs:
       - name: Prepare release filename
         if: github.event_name == 'release'
         run: |
-          cp "${{ matrix.local_path }}" "${{ matrix.uploaded_filename }}.zip"
+          zip -j "${{ matrix.uploaded_filename }}.zip" "${{ matrix.local_path }}"
       - name: Upload release
         if: github.event_name == 'release'
         run: |
