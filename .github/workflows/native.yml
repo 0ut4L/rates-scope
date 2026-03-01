@@ -19,10 +19,10 @@ jobs:
         include:
           # Replace "example" with the name your binary
           - os: macos-latest
-            uploaded_filename: rates-lib-x86_64-apple-darwin
+            uploaded_filename: rates-lib-graal-native-x86_64-apple-darwin
             local_path: json-rpc/target/native-image/json-rpc
           - os: ubuntu-latest
-            uploaded_filename: rates-lib-x86_64-pc-linux
+            uploaded_filename: rates-lib-graal-native-x86_64-pc-linux
             local_path: json-rpc/target/native-image/json-rpc
     env:
       # define Java options for both official sbt and sbt-extras
@@ -55,7 +55,6 @@ jobs:
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
             "${{ matrix.local_path }}" \
-            --clobber \
-            --name "${{ matrix.uploaded_filename }}"
+            --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
