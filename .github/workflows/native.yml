@@ -50,11 +50,15 @@ jobs:
         with:
           path: ${{ matrix.local_path }}
           name: ${{ matrix.uploaded_filename }}
+      - name: Prepare release filename
+        if: github.event_name == 'release'
+        run: |
+          cp "${{ matrix.local_path }}" "${{ matrix.uploaded_filename }}.zip"
       - name: Upload release
         if: github.event_name == 'release'
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-            "${{ matrix.local_path }}" \
+            "${{ matrix.uploaded_filename }}.zip" \
             --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
