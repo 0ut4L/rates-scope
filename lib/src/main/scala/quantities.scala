@@ -46,7 +46,6 @@ object quantities:
 
     given Conversion[Double, Strike] = Strike.apply
 
-
   // Tenor
   case class Tenor(length: Int, unit: Tenor.Unit):
 

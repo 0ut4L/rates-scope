@@ -65,10 +65,10 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
       volatilities = Map(
         dtos.Currency.USD -> dtos.Volatility.Cube(
           Map(
-            dtos.Tenor.`3M` -> dtos.VolatilitySurface(
+            dtos.Tenor.`3M` ->
               Map(
-                dtos.Tenor.`1Y` -> dtos.VolatiltySkew(
-                  Seq(
+                dtos.Tenor.`1Y` ->
+                  List(
                     dtos.Moneyness(-0.0200) -> 100.0,
                     dtos.Moneyness(-0.0100) -> 80.0,
                     dtos.Moneyness(-0.0050) -> 72.0,
@@ -79,9 +79,7 @@ class VanillaPricerSuite extends munit.FunSuite with EitherSyntax:
                     dtos.Moneyness(+0.0100) -> 90.0,
                     dtos.Moneyness(+0.0200) -> 93.0
                   )
-                )
               )
-            )
           ),
           VolUnit.BpPerYear,
           volConventions

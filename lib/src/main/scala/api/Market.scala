@@ -39,7 +39,7 @@ trait Market[T]:
   def volSurface(
       currency: dtos.Currency,
       tenor: dtos.Tenor
-  ): Either[MarketError, dtos.VolatilitySurface]
+  ): Either[MarketError, Map[dtos.Tenor, List[(dtos.Moneyness, Double)]]]
 
   def calendar(name: dtos.CalendarId): Either[MarketError, dtos.Calendar[T]]
 
@@ -89,7 +89,7 @@ object Market:
     def volSurface(
         currency: dtos.Currency,
         tenor: dtos.Tenor
-    ): Either[MarketError, dtos.VolatilitySurface] =
+    ): Either[MarketError, Map[dtos.Tenor, List[(dtos.Moneyness, Double)]]] =
       volatilities.get(currency).flatMap:
         case dtos.Volatility.Cube(cube, _, _) => cube.get(tenor)
         case dtos.Volatility.Flat(_, _)       => None

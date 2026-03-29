@@ -4,6 +4,7 @@ import cats.syntax.all.*
 import lib.dtos
 import lib.quantities.*
 import lib.quantities.Tenor.toYearFraction
+
 import scala.math.Ordering.Implicits.*
 
 class Lib[T: lib.DateLike](market: Market[T]):
@@ -36,8 +37,8 @@ class Lib[T: lib.DateLike](market: Market[T]):
       case dtos.Volatility.Cube(cube, unit, conventions) =>
         market.volSurface(currency, tenor).flatMap: surface =>
           buildVolConventions(conventions, tenor).map: rate =>
-            val skews = surface.surface.toList.map:
-              case (expTenor, dtos.VolatiltySkew(skew)) =>
+            val skews = surface.toList.map:
+              case (expTenor, skew) =>
                 val expiry =
                   rate.calendar.addBusinessPeriod(market.t, expTenor)(using rate.bdConvention)
                 expiry -> lib.Lazy:

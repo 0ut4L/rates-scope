@@ -11,10 +11,6 @@ object VolUnit:
 enum VolUnit derives ConfiguredEnumCodec:
   case BpPerYear
 
-case class VolatiltySkew(skew: Seq[(Moneyness, Double)]) derives Codec
-
-case class VolatilitySurface(surface: Map[Tenor, VolatiltySkew]) derives Codec
-
 case class VolatilityMarketConventions(
     boundaryTenor: Tenor,
     liborRate: VolatilityMarketConventions.Libor,
@@ -54,7 +50,7 @@ enum Volatility:
   def unit: VolUnit
 
   case Cube(
-      cube: Map[Tenor, VolatilitySurface],
+      cube: Map[Tenor, Map[Tenor, List[(Moneyness, Double)]]],
       unit: VolUnit,
       conventions: VolatilityMarketConventions
   ) extends Volatility

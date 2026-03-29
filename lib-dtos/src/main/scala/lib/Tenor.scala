@@ -1,9 +1,9 @@
 package lib.dtos
 
 import cats.Show
+import cats.syntax.all.*
 import io.circe.*
 import io.circe.syntax.*
-import cats.syntax.all.*
 
 import scala.util.Try
 

@@ -98,7 +98,7 @@ object Handler:
             market.volCube(params.currency).flatMap:
               case dtos.Volatility.Cube(cube, _, _) =>
                 val tenors = cube.keysIterator.toList
-                val expiries = cube.values.flatMap(_.surface.keysIterator).toList.distinct
+                val expiries = cube.values.flatMap(_.keysIterator).toList.distinct
                 val api = new Api(market)
                 tenors.flatTraverse: tenor =>
                   expiries.traverse: expiry =>

@@ -1,11 +1,11 @@
 package lib
 
+import cats.Show
 import cats.syntax.all.*
 import io.circe.*
 
 import java.time.LocalDate
 import scala.util.Try
-import cats.Show
 
 package object dtos:
 
